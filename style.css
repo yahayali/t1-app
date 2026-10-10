@@ -324,8 +324,8 @@ button:active { transform: scale(0.97); }
   line-height: 1.6;
   white-space: pre-wrap;
   word-break: break-word;
-  direction: ltr;
-  text-align: left;
+  direction: rtl;
+  text-align: right;
   border: 1px solid var(--border);
   overflow-x: auto;
 }
