@@ -8,32 +8,49 @@ const NUM_TRADES = 10;
 const STORAGE_KEY = "T1_data_v29";
 
 // ═══════════════════════════════════════════════════════════
-// بيانات الرموز الثابتة (Offline)
+// بيانات الرموز الثابتة (Offline) — مع أسعار افتراضية
 // ═══════════════════════════════════════════════════════════
 const SYMBOLS = {
-  XAUUSD:     { digits: 3, point: 0.001,   contract: 100,    volumeStep: 0.01, spread: 0.50 },
-  XAGUSD:     { digits: 3, point: 0.001,   contract: 5000,   volumeStep: 0.01, spread: 0.50 },
-  EURUSD:     { digits: 5, point: 0.00001, contract: 100000, volumeStep: 0.01, spread: 0.00050 },
-  GBPUSD:     { digits: 5, point: 0.00001, contract: 100000, volumeStep: 0.01, spread: 0.00050 },
-  USDJPY:     { digits: 3, point: 0.001,   contract: 100000, volumeStep: 0.01, spread: 0.100 },
-  BTCUSD:     { digits: 2, point: 1.0,     contract: 1,      volumeStep: 0.01, spread: 50.00 },
-  US500_x100: { digits: 2, point: 0.01,    contract: 100,    volumeStep: 0.01, spread: 0.50 },
-  USTEC_x100: { digits: 2, point: 0.01,    contract: 100,    volumeStep: 0.01, spread: 0.89 },
-  USTEC:      { digits: 2, point: 0.01,    contract: 100,    volumeStep: 0.01, spread: 0.89 },
-  USOIL:      { digits: 3, point: 0.001,   contract: 1000,   volumeStep: 0.01, spread: 0.014 },
-  NVDA:       { digits: 2, point: 0.01,    contract: 100,    volumeStep: 0.01, spread: 0.11 },
-  TSLA:       { digits: 2, point: 0.01,    contract: 100,    volumeStep: 0.01, spread: 0.20 }
+  XAUUSD:     { price: 4000.000,  digits: 3, point: 0.001,   contract: 100,    volumeStep: 0.01, spread: 0.50 },
+  XAGUSD:     { price: 60.000,    digits: 3, point: 0.001,   contract: 5000,   volumeStep: 0.01, spread: 0.50 },
+  EURUSD:     { price: 1.15000,   digits: 5, point: 0.00001, contract: 100000, volumeStep: 0.01, spread: 0.00050 },
+  GBPUSD:     { price: 1.35000,   digits: 5, point: 0.00001, contract: 100000, volumeStep: 0.01, spread: 0.00050 },
+  USDJPY:     { price: 155.000,   digits: 3, point: 0.001,   contract: 100000, volumeStep: 0.01, spread: 0.100 },
+  BTCUSD:     { price: 60000.00,  digits: 2, point: 1.0,     contract: 1,      volumeStep: 0.01, spread: 50.00 },
+  US500_x100: { price: 50000.00,  digits: 2, point: 0.01,    contract: 100,    volumeStep: 0.01, spread: 0.50 },
+  USTEC_x100: { price: 30000.00,  digits: 2, point: 0.01,    contract: 100,    volumeStep: 0.01, spread: 0.89 },
+  USTEC:      { price: 30000.00,  digits: 2, point: 0.01,    contract: 100,    volumeStep: 0.01, spread: 0.89 },
+  USOIL:      { price: 90.00,     digits: 3, point: 0.001,   contract: 1000,   volumeStep: 0.01, spread: 0.014 },
+  NVDA:       { price: 230.00,    digits: 2, point: 0.01,    contract: 100,    volumeStep: 0.01, spread: 0.11 },
+  TSLA:       { price: 380.00,    digits: 2, point: 0.01,    contract: 100,    volumeStep: 0.01, spread: 0.20 }
 };
 
 // ═══════════════════════════════════════════════════════════
-// دوال مساعدة
+// دوال مساعدة — تحويل الأرقام إلى الإنجليزية دائمًا
 // ═══════════════════════════════════════════════════════════
 const $ = id => document.getElementById(id);
-const val = id => parseFloat($(id).value) || 0;
 const str = id => $(id).value.trim();
 
+// قراءة رقم من حقل وضمان أنه بالإنجليزية (تحويل الأرقام العربية إلى إنجليزية)
+function toEnglishDigits(str) {
+  return String(str)
+    .replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d))
+    .replace(/[۰-۹]/g, d => "۰۱۲۳۴۵۶۷۸۹".indexOf(d));
+}
+
+function val(id) {
+  const raw = toEnglishDigits($(id).value);
+  const n = parseFloat(raw);
+  return isNaN(n) ? 0 : n;
+}
+
+// تنسيق رقم بالإنجليزية دائمًا
+function fmt(n, decimals = 2) {
+  return Number(n).toFixed(decimals);
+}
+
 // ═══════════════════════════════════════════════════════════
-// تحديث بيانات الرمز التفصيلية (Digits/Point/Contract/VolumeStep)
+// تحديث بيانات الرمز التفصيلية والسعر الافتراضي
 // ═══════════════════════════════════════════════════════════
 function updateSymbolInfo() {
   const key = str("symbol").toUpperCase();
@@ -44,6 +61,9 @@ function updateSymbolInfo() {
   $("infoPoint").textContent       = sym.point;
   $("infoContract").textContent    = sym.contract.toFixed(1);
   $("infoVolumeStep").textContent  = sym.volumeStep;
+
+  // تحديث السعر الحالي بالسعر الافتراضي للرمز
+  $("price").value = sym.price.toFixed(sym.digits);
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -77,11 +97,11 @@ for (let i = 1; i <= NUM_TRADES; i++) {
       </div>
       <div class="trade-field">
         <label>سعر الدخول</label>
-        <input type="number" id="entry_${i}" value="29500.00" step="0.01" inputmode="decimal">
+        <input type="number" id="entry_${i}" value="30000.00" step="0.00001" inputmode="decimal">
       </div>
 
       <div class="close-section">
-        <div class="close-title">🔄 الإغلاق 1 (اتركه فارغًا إن لم يُغلق)</div>
+        <div class="close-title">الإغلاق 1 (اتركه فارغًا إن لم يُغلق)</div>
         <div class="close-grid">
           <div class="trade-field">
             <label>لوت الإغلاق</label>
@@ -89,7 +109,7 @@ for (let i = 1; i <= NUM_TRADES; i++) {
           </div>
           <div class="trade-field">
             <label>سعر الإغلاق</label>
-            <input type="number" id="c1price_${i}" placeholder="0.00" step="0.01" inputmode="decimal">
+            <input type="number" id="c1price_${i}" placeholder="0.00" step="0.00001" inputmode="decimal">
           </div>
         </div>
         <div class="close-result" id="c1result_${i}">—</div>
@@ -137,11 +157,11 @@ function calcClose1(i) {
   const type = $(`type_${i}`).value;
   const totalLot = val(`lot_${i}`);
   const entry = val(`entry_${i}`);
-  const c1PriceStr = str(`c1price_${i}`);
-  const c1LotStr = str(`c1lot_${i}`);
+  const c1PriceStr = toEnglishDigits(str(`c1price_${i}`));
+  const c1LotStr = toEnglishDigits(str(`c1lot_${i}`));
 
   if (!c1PriceStr) {
-    box.innerHTML = `<span class="warning">⚠️ أدخل سعر الإغلاق</span>`;
+    box.innerHTML = `<span class="warning">أدخل سعر الإغلاق</span>`;
     return;
   }
 
@@ -149,7 +169,7 @@ function calcClose1(i) {
   let c1Lot = c1LotStr ? parseFloat(c1LotStr) : totalLot;
 
   if (c1Lot <= 0 || c1Lot > totalLot) {
-    box.innerHTML = `<span class="danger">⚠️ لوت غير صحيح</span>`;
+    box.innerHTML = `<span class="danger">لوت غير صحيح</span>`;
     return;
   }
 
@@ -196,8 +216,8 @@ function calculateNetMargin() {
     let remaining = origLot;
     let realized = 0;
 
-    const c1PriceStr = str(`c1price_${i}`);
-    const c1LotStr = str(`c1lot_${i}`);
+    const c1PriceStr = toEnglishDigits(str(`c1price_${i}`));
+    const c1LotStr = toEnglishDigits(str(`c1lot_${i}`));
 
     if (c1PriceStr) {
       const c1Price = parseFloat(c1PriceStr);
@@ -296,51 +316,51 @@ function calculateNetMargin() {
     ? "لا يمكن التصفير (الرصيد كافٍ)"
     : liqPrice.toFixed(digits);
 
-  // بناء النص
+  // بناء النص بالعربية مع الأرقام الإنجليزية
   let out = "";
   out += `========================================\n`;
-  out += `   Net Margin - T_1 (Version ${VERSION})\n`;
+  out += `   حساب Net Margin - T_1 (الإصدار ${VERSION})\n`;
   out += `========================================\n`;
-  out += `Margin Level  : ${marginLevel.toFixed(1)}%  (${statusText})\n`;
-  out += `Liquidation   : ${liqDisplay}\n`;
+  out += `مستوى الهامش   : ${marginLevel.toFixed(1)}%  (${statusText})\n`;
+  out += `سعر التصفير    : ${liqDisplay}\n`;
   out += `----------------------------------------\n`;
-  out += `Symbol        : ${symbolKey}\n`;
-  out += `Current Price : ${currentPrice.toFixed(digits)}\n`;
-  out += `Balance       : ${balance.toFixed(2)} USD\n`;
-  out += `Floating P/L  : ${totalFloating >= 0 ? "+" : ""}${totalFloating.toFixed(2)} USD\n`;
-  out += `Realized P/L  : ${totalRealized >= 0 ? "+" : ""}${totalRealized.toFixed(2)} USD\n`;
+  out += `الرمز          : ${symbolKey}\n`;
+  out += `السعر الحالي   : ${currentPrice.toFixed(digits)}\n`;
+  out += `الرصيد         : ${balance.toFixed(2)} USD\n`;
+  out += `الخسارة العائمة: ${totalFloating >= 0 ? "+" : ""}${totalFloating.toFixed(2)} USD\n`;
+  out += `الربح المحقق   : ${totalRealized >= 0 ? "+" : ""}${totalRealized.toFixed(2)} USD\n`;
   out += `----------------------------------------\n`;
-  out += `Equity        : ${equity.toFixed(2)} USD\n`;
-  out += `Leverage      : 1:${leverage.toFixed(0)}\n`;
-  out += `Stop Out      : ${(stopOutPct * 100).toFixed(0)}%\n`;
-  out += `Used Margin   : ${totalMargin.toFixed(2)} USD\n`;
-  out += `Free Margin   : ${freeMargin.toFixed(2)} USD\n`;
-  out += `New Balance   : ${newBalance.toFixed(2)} USD\n`;
-  out += `Notional Value: ${totalNotional.toFixed(2)} USD\n`;
+  out += `حقوق الملكية   : ${equity.toFixed(2)} USD\n`;
+  out += `الرافعة        : 1:${leverage.toFixed(0)}\n`;
+  out += `نسبة Stop Out  : ${(stopOutPct * 100).toFixed(0)}%\n`;
+  out += `الهامش المستخدم: ${totalMargin.toFixed(2)} USD\n`;
+  out += `الهامش الحر    : ${freeMargin.toFixed(2)} USD\n`;
+  out += `الرصيد الجديد  : ${newBalance.toFixed(2)} USD\n`;
+  out += `القيمة الأصلية : ${totalNotional.toFixed(2)} USD\n`;
   out += `----------------------------------------\n`;
-  out += `Trades Details (${selected.length}):\n`;
+  out += `تفاصيل الصفقات (${selected.length}):\n`;
   out += `----------------------------------------\n`;
 
   selected.forEach(t => {
     if (t.closed) {
-      out += `[CLOSED] T_${t.index} | ${t.origLot.toFixed(2)} lot | P/L: ${t.realized >= 0 ? "+" : ""}${t.realized.toFixed(2)}\n`;
+      out += `[مغلقة] T_${t.index} | ${t.origLot.toFixed(2)} لوت | ربح محقق: ${t.realized >= 0 ? "+" : ""}${t.realized.toFixed(2)}\n`;
     } else {
-      const icon = t.type === "buy" ? "BUY" : "SELL";
-      out += `[${icon}] T_${t.index} | ${t.lot.toFixed(2)} lot\n`;
-      out += `       ${t.entry.toFixed(digits)} -> ${t.exit.toFixed(digits)}\n`;
-      out += `       P/L: ${t.pl >= 0 ? "+" : ""}${t.pl.toFixed(2)} | Notional: ${t.notional.toFixed(2)}\n`;
+      const typeAr = t.type === "buy" ? "شراء" : "بيع";
+      out += `[${typeAr}] T_${t.index} | ${t.lot.toFixed(2)} لوت\n`;
+      out += `         ${t.entry.toFixed(digits)} -> ${t.exit.toFixed(digits)}\n`;
+      out += `         الربح: ${t.pl >= 0 ? "+" : ""}${t.pl.toFixed(2)} | القيمة: ${t.notional.toFixed(2)}\n`;
     }
   });
 
   out += `----------------------------------------\n`;
-  out += `Net Position  : ${netPosition >= 0 ? "+" : ""}${netPosition.toFixed(2)} lot\n`;
-  out += `Total Buy     : ${totalBuy.toFixed(2)} (Avg ${avgBuy.toFixed(digits)})\n`;
-  out += `Total Sell    : ${totalSell.toFixed(2)} (Avg ${avgSell.toFixed(digits)})\n`;
-  out += `Avg Entry     : ${avgEntry.toFixed(digits)}\n`;
+  out += `صافي المركز    : ${netPosition >= 0 ? "+" : ""}${netPosition.toFixed(2)} لوت\n`;
+  out += `إجمالي الشراء  : ${totalBuy.toFixed(2)} (متوسط ${avgBuy.toFixed(digits)})\n`;
+  out += `إجمالي البيع   : ${totalSell.toFixed(2)} (متوسط ${avgSell.toFixed(digits)})\n`;
+  out += `متوسط الدخول   : ${avgEntry.toFixed(digits)}\n`;
   out += `----------------------------------------\n`;
-  out += `Equity at SO  : ${equityAtSO.toFixed(2)} USD\n`;
-  out += `Max Loss      : ${maxLoss.toFixed(2)} USD\n`;
-  out += `Points to SO  : ${Math.abs(pointsToSO).toFixed(0)}\n`;
+  out += `حقوق الملكية عند SO : ${equityAtSO.toFixed(2)} USD\n`;
+  out += `الخسارة القصوى      : ${maxLoss.toFixed(2)} USD\n`;
+  out += `النقاط حتى التصفير  : ${Math.abs(pointsToSO).toFixed(0)}\n`;
   out += `========================================\n`;
 
   const box = $("resultBox");
@@ -410,7 +430,7 @@ $("loadBtn").addEventListener("click", () => {
     const data = JSON.parse(raw);
     const g = data.general || {};
     $("symbol").value = g.symbol || "USTEC";
-    $("price").value = g.price || "29500.00";
+    $("price").value = g.price || "30000.00";
     $("balance").value = g.balance || "150000";
     $("leverage").value = g.leverage || "100";
     $("stopOut").value = g.stopOut || "50";
@@ -420,7 +440,7 @@ $("loadBtn").addEventListener("click", () => {
       if (i < 1 || i > NUM_TRADES) return;
       $(`type_${i}`).value = t.type || "buy";
       $(`lot_${i}`).value = t.lot || "1.00";
-      $(`entry_${i}`).value = t.entry || "29500.00";
+      $(`entry_${i}`).value = t.entry || "30000.00";
       $(`c1lot_${i}`).value = t.c1lot || "";
       $(`c1price_${i}`).value = t.c1price || "";
       $(`check_${i}`).checked = t.checked || false;
