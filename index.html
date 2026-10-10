@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1E1E1E">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="T_1">
+<title>T_1 — حاسبة التصفير</title>
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ═══════════ الهيدر ═══════════ -->
+<header class="app-header">
+  <h1>حاسبة التصفير — T_1</h1>
+  <span class="version">الإصدار 29</span>
+</header>
+
+<!-- ═══════════ التبويبات ═══════════ -->
+<nav class="tabs">
+  <button class="tab active" data-tab="general">معلومات عامة</button>
+  <button class="tab" data-tab="trades">الصفقات (10)</button>
+  <button class="tab" data-tab="result">النتيجة</button>
+</nav>
+
+<!-- ═══════════ تبويب: معلومات عامة ═══════════ -->
+<section id="tab-general" class="tab-content active">
+  <div class="card">
+    <h2>المعلومات الأساسية</h2>
+
+    <label>الرمز</label>
+    <select id="symbol">
+      <option value="XAUUSD">XAUUSD</option>
+      <option value="XAGUSD">XAGUSD</option>
+      <option value="EURUSD">EURUSD</option>
+      <option value="GBPUSD">GBPUSD</option>
+      <option value="USDJPY">USDJPY</option>
+      <option value="BTCUSD">BTCUSD</option>
+      <option value="US500_x100">US500_x100</option>
+      <option value="USTEC_x100">USTEC_x100</option>
+      <option value="USTEC" selected>USTEC</option>
+      <option value="USOIL">USOIL</option>
+      <option value="NVDA">NVDA</option>
+      <option value="TSLA">TSLA</option>
+    </select>
+
+    <label>السعر الحالي</label>
+    <input type="number" id="price" value="29500.00" step="0.01" inputmode="decimal">
+
+    <label>الرصيد ($)</label>
+    <input type="number" id="balance" value="150000" step="0.01" inputmode="decimal">
+
+    <label>الرافعة (1:)</label>
+    <input type="number" id="leverage" value="100" step="1" inputmode="numeric">
+
+    <label>Stop Out (%)</label>
+    <input type="number" id="stopOut" value="50" step="1" inputmode="numeric">
+
+    <!-- ═══ بيانات الرمز التفصيلية (تتحدث تلقائيًا حسب الرمز) ═══ -->
+    <div class="symbol-info">
+      <div class="info-row">
+        <span class="info-label">Digits</span>
+        <span class="info-value" id="infoDigits">2</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Point</span>
+        <span class="info-value" id="infoPoint">0.01</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Contract Size</span>
+        <span class="info-value" id="infoContract">100.0</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Volume Step</span>
+        <span class="info-value" id="infoVolumeStep">0.01</span>
+      </div>
+    </div>
+
+    <button id="calcBtn" class="btn-primary">حساب Net Margin</button>
+  </div>
+</section>
+
+<!-- ═══════════ تبويب: الصفقات ═══════════ -->
+<section id="tab-trades" class="tab-content">
+  <div id="tradesContainer"></div>
+
+  <div class="action-buttons">
+    <button id="selectAll" class="btn-secondary">تحديد الكل</button>
+    <button id="deselectAll" class="btn-secondary">إلغاء التحديد</button>
+  </div>
+
+  <button id="calcBtn2" class="btn-primary">حساب Net Margin</button>
+</section>
+
+<!-- ═══════════ تبويب: النتيجة ═══════════ -->
+<section id="tab-result" class="tab-content">
+  <pre id="resultBox">اضغط "حساب Net Margin" لعرض النتيجة</pre>
+</section>
+
+<!-- ═══════════ أزرار الحفظ والتحميل ═══════════ -->
+<footer class="app-footer">
+  <button id="saveBtn" class="btn-save">💾 حفظ</button>
+  <button id="loadBtn" class="btn-load">📂 تحميل</button>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
