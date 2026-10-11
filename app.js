@@ -363,12 +363,7 @@ function calculateNetMargin() {
   } else {
     positionType = "مركز محايد";
   }
-  // تحذير إذا كان هناك شراء وبيع معًا
-  if (totalBuy > 0 && totalSell > 0) {
-    out += `⚠️ تحذير: لديك صفقات شراء وبيع مختلطة\n`;
-    out += `   صافي مركز شراء: ${totalBuy.toFixed(2)} لوت\n`;
-    out += `   صافي مركز بيع : ${totalSell.toFixed(2)} لوت\n`;
-  }
+  
   out += `صافي المركز    : ${netPosition >= 0 ? "+" : ""}${netPosition.toFixed(2)} لوت (${positionType})\n`;
   out += `إجمالي الشراء  : ${totalBuy.toFixed(2)} (متوسط ${avgBuy.toFixed(digits)})\n`;
   out += `إجمالي البيع   : ${totalSell.toFixed(2)} (متوسط ${avgSell.toFixed(digits)})\n`;
