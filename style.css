@@ -320,7 +320,7 @@ button:active { transform: scale(0.97); }
   padding: 15px;
   border-radius: 10px;
   font-family: 'Courier New', monospace;
-  font-size: 12px;
+  font-size: 18px;
   line-height: 1.6;
   white-space: pre-wrap;
   word-break: break-word;
