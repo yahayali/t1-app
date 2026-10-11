@@ -19,7 +19,7 @@ const SYMBOLS = {
   BTCUSD:     { price: 60000.00,  digits: 2, point: 1.0,     contract: 1,      volumeStep: 0.01, spread: 50.00 },
   US500_x100: { price: 50000.00,  digits: 2, point: 0.01,    contract: 100,    volumeStep: 0.01, spread: 0.50 },
   USTEC_x100: { price: 30000.00,  digits: 2, point: 0.01,    contract: 100,    volumeStep: 0.01, spread: 0.89 },
-  USTEC:      { price: 30000.00,  digits: 2, point: 0.01,    contract: 100,    volumeStep: 0.01, spread: 0.89 },
+  USTEC:      { price: 30000.00,  digits: 2, point: 0.01,    contract: 1,    volumeStep: 0.01, spread: 0.89 },
   USOIL:      { price: 90.00,     digits: 3, point: 0.001,   contract: 1000,   volumeStep: 0.01, spread: 0.014 },
   NVDA:       { price: 230.00,    digits: 2, point: 0.01,    contract: 100,    volumeStep: 0.01, spread: 0.11 },
   TSLA:       { price: 380.00,    digits: 2, point: 0.01,    contract: 100,    volumeStep: 0.01, spread: 0.20 }
