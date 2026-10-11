@@ -301,17 +301,18 @@ function calculateNetMargin() {
   // سعر التصفير
   const pointValue = sym.contract * sym.point * netLot;
   const maxLoss = equity - equityAtSO;
-
-  let liqPrice = avgEntry, pointsToSO = 0;
+  
+  let liqPrice = currentPrice, pointsToSO = 0;
   if (pointValue > 0 && netPosition !== 0) {
     pointsToSO = maxLoss / pointValue;
     if (netPosition > 0) {
-      liqPrice = avgEntry - pointsToSO * sym.point;
+      // مركز شراء: السعر ينخفض للتصفير
+      liqPrice = currentPrice - pointsToSO * sym.point;
     } else {
-      liqPrice = avgEntry + pointsToSO * sym.point;
+      // مركز بيع: السعر يرتفع للتصفير
+      liqPrice = currentPrice + pointsToSO * sym.point;
     }
   }
-
   const liqDisplay = liqPrice < 0
     ? "لا يمكن التصفير (الرصيد كافٍ)"
     : liqPrice.toFixed(digits);
@@ -353,7 +354,17 @@ function calculateNetMargin() {
   });
 
   out += `----------------------------------------\n`;
-  out += `صافي المركز    : ${netPosition >= 0 ? "+" : ""}${netPosition.toFixed(2)} لوت\n`;
+  // تحديد نوع المركز
+  let positionType = "";
+  if (netPosition > 0) {
+    positionType = "صافي شراء";
+  } else if (netPosition < 0) {
+    positionType = "صافي بيع";
+  } else {
+    positionType = "مركز محايد";
+  }
+  
+  out += `صافي المركز    : ${netPosition >= 0 ? "+" : ""}${netPosition.toFixed(2)} لوت (${positionType})\n`;
   out += `إجمالي الشراء  : ${totalBuy.toFixed(2)} (متوسط ${avgBuy.toFixed(digits)})\n`;
   out += `إجمالي البيع   : ${totalSell.toFixed(2)} (متوسط ${avgSell.toFixed(digits)})\n`;
   out += `متوسط الدخول   : ${avgEntry.toFixed(digits)}\n`;
