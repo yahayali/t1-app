@@ -297,22 +297,23 @@ function calculateNetMargin() {
   } else {
     statusColor = "danger"; statusText = "خطر";
   }
-  // قيمة النقطة الإجمالية
-  const totalPointValue = sym.contract * sym.point * netLot;
-  
-  // عدد النقاط
-  const pointsToSO = totalPointValue > 0 ? maxLoss / totalPointValue : 0;
-  
-  // انخفاض السعر
-  const priceMove = pointsToSO * sym.point;
   
   // سعر التصفير
-  let liqPrice = currentPrice;
-  if (netPosition > 0) {
-    liqPrice = currentPrice - priceMove;
-  } else if (netPosition < 0) {
-    liqPrice = currentPrice + priceMove;
+  const pointValue = sym.contract * sym.point * netLot;
+  const maxLoss = equity - equityAtSO;
+  
+  let liqPrice = currentPrice, pointsToSO = 0;
+  if (pointValue > 0 && netPosition !== 0) {
+    pointsToSO = maxLoss / pointValue;
+    if (netPosition > 0) {
+      // مركز شراء: السعر ينخفض للتصفير
+      liqPrice = currentPrice - pointsToSO * sym.point;
+    } else {
+      // مركز بيع: السعر يرتفع للتصفير
+      liqPrice = currentPrice + pointsToSO * sym.point;
+    }
   }
+
   const liqDisplay = liqPrice < 0
     ? "لا يمكن التصفير (الرصيد كافٍ)"
     : liqPrice.toFixed(digits);
