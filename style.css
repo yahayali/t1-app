@@ -200,6 +200,16 @@ button:active { transform: scale(0.97); }
   margin: 5px 3px;
 }
 
+.btn-gross {
+  width: 100%;
+  background: #6A9955;
+  color: white;
+  padding: 12px;
+  font-size: 14px;
+  margin-top: 8px;
+  display: block;
+}
+
 /* ═══════════ الصفقات ═══════════ */
 .trade-card {
   background: var(--frame);
@@ -320,7 +330,7 @@ button:active { transform: scale(0.97); }
   padding: 15px;
   border-radius: 10px;
   font-family: 'Courier New', monospace;
-  font-size: 18px;
+  font-size: 14px;
   line-height: 1.6;
   white-space: pre-wrap;
   word-break: break-word;
