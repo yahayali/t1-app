@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="T_1">
-<title>T_1 — حاسبة التصفير</title>
+<title>T_1 — حاسبة التصفير (الإصدار 32)</title>
 <link rel="manifest" href="manifest.json">
 <link rel="stylesheet" href="style.css">
 </head>
@@ -16,7 +16,7 @@
 <!-- ═══════════ الهيدر ═══════════ -->
 <header class="app-header">
   <h1>حاسبة التصفير — T_1</h1>
-  <span class="version">الإصدار 29</span>
+  <span class="version">الإصدار 32</span>
 </header>
 
 <!-- ═══════════ التبويبات ═══════════ -->
@@ -58,6 +58,13 @@
 
     <label>Stop Out (%)</label>
     <input type="number" id="stopOut" value="50" step="1" inputmode="numeric">
+
+    <label>طريقة الحساب</label>
+    <select id="balanceMode">
+      <option value="balance" selected>رصيد (Balance)</option>
+      <option value="equity">حقوق الملكية (Equity)</option>
+      <option value="fm">الهامش الحر (Free Margin)</option>
+    </select>
 
     <!-- ═══ بيانات الرمز التفصيلية (تتحدث تلقائيًا حسب الرمز) ═══ -->
     <div class="symbol-info">
