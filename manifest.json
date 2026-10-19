@@ -1,7 +1,7 @@
 {
-  "name": "T_1 — حاسبة التصفير",
+  "name": "T_1 — حاسبة التصفير (الإصدار 32)",
   "short_name": "T_1",
-  "description": "حاسبة Net Margin مبسطة لـ 10 صفقات",
+  "description": "حاسبة Net/Gross Margin مبسطة لـ 10 صفقات",
   "start_url": "./index.html",
   "display": "standalone",
   "orientation": "portrait",
